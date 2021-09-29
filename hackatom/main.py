@@ -3,7 +3,7 @@ import pygame
 class Engine():
 	def __init__(self,m,ft,fg,x,v,dt,FU):			#Mass, Force of Thrust, Force of Gravity, Starting position, starting velocity, delta time, Fuel Usage
 		self.m = m
-		self.ft = ft
+		self.maxft = ft
 		self.fg = fg
 		self.x = x
 		self.v = v
@@ -12,6 +12,7 @@ class Engine():
 		self.timepassed = 0
 		self.FU = FU
 		self.crashed = False
+		self.ft = 0
 	def _update_mass(self):							#Function updating mass by subtracting it's fuel usage multipied by delta time						
 		self.mass = self.mass - self.FU*self.dt
 		self.empty = 0
@@ -27,7 +28,14 @@ class Engine():
 
 
 	def _change_ft(self,newft):
-		self.ft = newft
+		self.oldft = self.ft
+		self.ft = self.ft + newft
+		if self.ft >35000000:
+			self.ft = 35000000
+		elif self.ft < 0:
+			self.ft = 0
+
+
 	def _launch(self):
 		while self.fin == False:
 			self._update_position_and_speed()

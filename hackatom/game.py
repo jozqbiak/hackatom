@@ -6,7 +6,7 @@ from rakieta import Rakieta
 white= (255,255,255)
 red = (255,0,0)
 green = (0,200,0)
-blue = (0,0,200)
+blue = (135,206,235)
 black = (50,50,50)
 yellow = (255,255,0)
 m = 3000000 #Vessel mass in kg
@@ -14,7 +14,7 @@ ft = 35000000 #Force thrust in N
 fg = -9.8 #Force of gravity
 x = 0 #starting postion
 v = 0 #Starting velocity
-dt = 0.1 #Delta time in s 
+dt = 0.02 #Delta time in s 
 FU = 1000 #Fuel usage in kg/s
 class game():
 	def __init__(self, width, height):
@@ -38,7 +38,8 @@ class game():
 		self.stopped = False
 		self.startsim = False
 		self.rakieta = Rakieta(self.width, self.height,self.screen)
-		self.screen.fill(blue)
+		self.time = 0
+		self.dt = dt
 
 	def _menu(self):
 		self.title = self.BigKutafont.render('Lecimy jak rakieta',True,white)
@@ -50,19 +51,37 @@ class game():
 			self.yOffset=randint(-30,30)
 			pygame.draw.ellipse(self.screen,white,[100+self.xOffset,100+self.yOffset,50,50])		#100+xOffset,100+yOffset,size,size
 	def _height_index(self,value):
+		if value > 5000:
+			self.index = self.SmallNumberFont.render(str(round(value/1000,0))+ " k",True,white)
+		else:
+			self.index = self.SmallNumberFont.render(str(round(value,0)),True,white)
+		self.screen.blit(self.index,(0,10))
+
+	def _velocity_index(self,value):
+		self.index = self.SmallNumberFont.render(str(round(value,2)),True,white)
+		self.screen.blit(self.index,(0,30))
+	def _thrust_index(self,value):
 		self.index = self.SmallNumberFont.render(str(round(value,0)),True,white)
-		self.screen.blit(self.index,(0,0))
+		self.screen.blit(self.index,(0,50))
+	def _time_index(self,value):
+		self.index = self.SmallNumberFont.render(str(round(value,0)),True,white)
+		self.screen.blit(self.index,(0,70))
+
 	def _rungame(self):
 		self.running = True
 		self._drawCloud()
 		while self.running:
-			self.clock.tick(30)
+			self.time = self.time + self.dt
+			self.screen.fill(blue)
+			self.clock.tick(50)
 			self.rakieta._rotate_rakieta(40)
 			self.rakieta._blit_rakieta()
 			self._height_index(self.engine.x)
+			self._velocity_index(self.engine.v)
+			self._thrust_index(self.engine.ft)
 			self.keys = pygame.key.get_pressed()
 			self.engine._update_position_and_speed()
-
+			self.rakieta._check_rocket_status(self.engine.ft)
 			if self.startsim == False:
 				self._menu()
 			for event in pygame.event.get():
@@ -70,10 +89,10 @@ class game():
 					self.running = False
 				if event.type == pygame.KEYUP:
 					if self.keys[pygame.K_UP]:
-						self.engine._change_ft(1000000)
+						self.engine._change_ft(10000000)
 						print(1)
 				if self.keys[pygame.K_DOWN]:
-					self.engine._change_ft(-10000)
+					self.engine._change_ft(-10000000)
 
 
 			pygame.display.flip()

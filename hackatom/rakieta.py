@@ -20,6 +20,12 @@ class Rakieta(pygame.sprite.Sprite):
 	def _rotate_rakieta(self,a):
 		pygame.transform.rotate(self.rakieta, a)
 		self.rakieta_rect = self.rakieta.get_rect(center = (self.width/2, self.height-self.height/3.5))
+	def _check_rocket_status(self,ft):
+		if ft <= 0:
+			self.rakieta = pygame.image.load('rakieta.png').convert_alpha()
+		else:
+			self.rakieta = pygame.image.load('rakietaogien.png').convert_alpha()
+
 
 
 
