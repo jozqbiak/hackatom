@@ -40,9 +40,10 @@ class game():
         self.clock = pygame.time.Clock()
         self.stopped = False
         self.startsim = False
-        self.rakieta = Rakieta(self.width, self.height, self.screen)
+        self.rakieta = Rakieta(self.width, self.height, self.screen, self.engine)
         self.time = 0
         self.dt = dt
+        self.rakieta_bum = pygame.image.load('rakieta_bum.png')
 
     def _menu(self):
         self.title = self.BigKutafont.render('Lecimy jak rakieta', True, white)
@@ -75,6 +76,8 @@ class game():
         self.index = self.SmallNumberFont.render(str(round(value, 0)), True, white)
         self.screen.blit(self.index, (0, 70))
 
+
+
     def _rungame(self):
         self.running = True
         self._drawCloud()
@@ -85,13 +88,14 @@ class game():
             self.screen.blit(self.ground, (-9500, 500 + self.engine.x))
             self.clock.tick(50)
             self.rakieta._rotate_rakieta(40)
-            self.rakieta._blit_rakieta()
             self._height_index(self.engine.x)
             self._velocity_index(self.engine.v)
             self._thrust_index(self.engine.ft)
             self.keys = pygame.key.get_pressed()
             self.engine._update_position_and_speed()
             self.rakieta._check_rocket_status(self.engine.ft)
+            self.rakieta._hitting_ground()
+            self.rakieta._blit_rakieta()
             if self.startsim == False:
                 self._menu()
             for event in pygame.event.get():
@@ -100,7 +104,7 @@ class game():
                 if event.type == pygame.KEYUP:
                     if self.keys[pygame.K_UP]:
                         self.engine._change_ft(10000000)
-                        print(1)
+                         # print(1)
                 if self.keys[pygame.K_DOWN]:
                     self.engine._change_ft(-10000000)
 
