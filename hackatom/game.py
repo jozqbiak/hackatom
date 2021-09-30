@@ -44,6 +44,7 @@ class game():
         self.time = 0
         self.dt = dt
         self.rakieta_bum = pygame.image.load('rakieta_bum.png')
+        self.last_speed = 0
 
     def _menu(self):
         self.title = self.BigKutafont.render('Lecimy jak rakieta', True, white)
@@ -92,9 +93,10 @@ class game():
             self._velocity_index(self.engine.v)
             self._thrust_index(self.engine.ft)
             self.keys = pygame.key.get_pressed()
+            self.last_speed = self.engine.v
             self.engine._update_position_and_speed()
             self.rakieta._check_rocket_status(self.engine.ft)
-            self.rakieta._hitting_ground()
+            self.rakieta._hitting_ground(self.last_speed)
             self.rakieta._blit_rakieta()
             if self.startsim == False:
                 self._menu()

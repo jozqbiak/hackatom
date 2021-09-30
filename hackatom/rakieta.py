@@ -37,9 +37,9 @@ class Rakieta(pygame.sprite.Sprite):
             else:
                 self.rakieta = pygame.image.load('rakietaogien.png').convert_alpha()
 
-    def _hitting_ground(self):
-        if self.engine.v < -3:
-            if self.engine.x < 0.1:
+    def _hitting_ground(self, last_speed):
+        if last_speed < -3:
+            if self.engine.x <= 0:
                 self.exploded = True
                 self.rakieta = pygame.image.load('rakieta_bum.png').convert_alpha()
 
